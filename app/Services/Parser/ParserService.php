@@ -8,14 +8,6 @@ use Exception;
 
 class ParserService
 {
-    public array $instanse;
-
-    // public function __construct($file)
-    // {
-    //     $this->instanse = $this->parseFile($file);
-        
-    // }
-
     public function parseFile($file): array
     {
         try {
@@ -37,8 +29,6 @@ class ParserService
              
         //$codeColumn = Document::getColumnInTable($tables[0], 2);
         //$nameColumn = Document::getColumnInTable($tables[0], 1);
-
-        //$this->instanse = $tables;
 
         return  $tables;        
     }

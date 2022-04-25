@@ -4,6 +4,7 @@ namespace App\Services\Parser;
 
 use Exception;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Arr;
 
 class Document {
 	public string $data;
@@ -78,7 +79,7 @@ class Document {
 	
 	// Gets Table object $table and № of the column $column
 	// Returns array of Tdata objects
-	public static function getColumnInTable(Table $table, $column) {
+	public static function getColumnInTable(Table $table, int $columnNumber) {
 		
 		$result = array();
 		$tableData = $table->table[1];
@@ -91,14 +92,37 @@ class Document {
 							str_replace(	// remove nbsp, double- and triple- spaces
 							array('&nbsp;', '  ', '   '), ' ', (
 							str_replace(	// remove new lines
-							array("\r\n", "\n", "\r"), '' , $row->row[1][$column]->dataWithTags[1])))));
+							array("\r\n", "\n", "\r"), '' , $row->row[1][$columnNumber]->dataWithTags[1])))));
 			}
 		}
 		return $result;
 		
 	}
 
-	public static function getColumnInTableAsIs(Table $table, $column): array {
+	public static function getRowInTable(Table $table, $fkkoFlag = false): array {
+		$result = array();
+		$tableData = $table->table[1];
+
+		foreach($tableData as $row) {
+			if (count($row->row[1]) >= 2) {
+				if (!$fkkoFlag) {
+					$result[] = [
+						$row->row[1][2]->dataWithTags[1],
+						$row->row[1][1]->dataWithTags[1],
+					];
+				} else {
+					$result[] = [
+						$row->row[1][0]->dataWithTags[1],
+						$row->row[1][1]->dataWithTags[1],
+					];
+				}
+			}
+		}
+
+		return $result;
+	}
+
+	public static function getColumnInTableAsIs(Table $table, int $columnNumber): array {
 		
 		$result = array();
 		$tableData = $table->table[1];
@@ -106,13 +130,13 @@ class Document {
 		foreach ($tableData as $row) {
 			//if (isset($row->row[1][$column])) {
 			if (count($row->row[1]) >= 2) { //don't take rows with 0 or 1 <td> aka columns, as we need only rows containing both Code and Name
-				$key = trim( str_replace( array("\r\n", "\n", "\r"), '' , $row->row[1][$column]->dataWithTags[1]));
+				$key = trim( str_replace( array("\r\n", "\n", "\r"), '' , $row->row[1][$columnNumber]->dataWithTags[1]));
 				$value = trim(
 					mb_strtolower( 	// to lowercase
 					str_replace(	// remove nbsp, double- and triple- spaces
 					array('&nbsp;', '  ', '   '), ' ', (
 					str_replace(	// remove new lines
-					array("\r\n", "\n", "\r"), '' , $row->row[1][$column]->dataWithTags[1])))));
+					array("\r\n", "\n", "\r"), '' , $row->row[1][$columnNumber]->dataWithTags[1])))));
 				$result[$key] = $value;
 			}
 		}

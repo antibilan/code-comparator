@@ -18,24 +18,4 @@ class MainController extends Controller
         $s = $request->input('search');
         dd($s);
     }
-
-    public function analyze(Request $request)
-    {
-        $file1 = $request->file('fileCompany');
-        $file2 = $request->file('fileFkko');
-
-        ComparatorService::analyzeSimilarity($file1, $file2);
-    }
-
-    // public function compare(Request $request)
-    // {
-    //     if ($request->isMethod('post')) {
-    //         $missingCodes = ComparatorService::compareDocumentsByColumn($document1, $document2, 'code');
-    //         $missingNames = ComparatorService::compareDocumentsByColumn($document1, $document2, 'name');
-    //     }
-
-    //     dd($missingNames);
-    //     //dd($missingCodes);
-
-    // }
 }
