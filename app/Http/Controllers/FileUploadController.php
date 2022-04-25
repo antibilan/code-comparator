@@ -23,28 +23,22 @@ class FileUploadController extends Controller
             $filename2 = $file2->getClientOriginalName();
 
             try {
-                $parsedDocument1 = (new ParserService)->parseFile($file1); //($file1->get());
-                $parsedDocument2 = (new ParserService)->parseFile($file2);//($file2->get());
+                $parsedDocument1 = (new ParserService)->parseFile($file1);
+                $parsedDocument2 = (new ParserService)->parseFile($file2);
             } catch (Exception $e) {
                 throw $e;
                 return view('home');
             }
 
-            //$result = ComparatorService::compareDocumentsByColumn($parsedDocument1, $parsedDocument2, 'name');
-
             $results = [
                 ComparatorService::compareDocumentsByColumn($parsedDocument1, $parsedDocument2, 'name'),
                 ComparatorService::compareDocumentsByColumn($parsedDocument1, $parsedDocument2, 'code'),  
-            ];
-
-            $test = ComparatorService::compareSideBySideByColumn($parsedDocument1, $parsedDocument2, 'name');
-
-            dd($test);
+            ];            
 
             Storage::putFileAs($uploadFolder, $file1, $filename1);
             Storage::putFileAs($uploadFolder, $file2, $filename2);
 
-            //return view('home', ['results' => $results]);
+            return view('home', ['results' => $results]);
         }
     }
 }
