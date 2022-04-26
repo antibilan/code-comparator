@@ -18,7 +18,8 @@
             "cwd": "${fileDirname}",
             "port": 0,
             "runtimeArgs": [
-                "-dxdebug.start_with_request=yes"
+                "-dxdebug.start_with_request=yes",
+                "xdebug.var_display_max_data=-1"
             ],
             "env": {
                 "XDEBUG_MODE": "debug,develop",
@@ -33,7 +34,8 @@
                 "-dxdebug.mode=debug",
                 "-dxdebug.start_with_request=yes",
                 "-S",
-                "localhost:0"
+                "localhost:0",
+                "xdebug.var_display_max_data=-1"
             ],
             "program": "",
             "cwd": "${workspaceRoot}",

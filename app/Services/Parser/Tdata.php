@@ -8,35 +8,23 @@ class Tdata {
 	
 	public function __construct($data) {
 		
-		$this->dataWithTags[0] = "<td>\n";
+		$this->dataWithTags[0] = "<td>";
 					
 		$pattern = array("#<td.+?>#s", "#</td>#s");	
 		
 		$dataWithoutTags = preg_replace($pattern, '', $data);
 		
-		$this->dataWithTags[1] = strip_tags($dataWithoutTags); // $this->dataWithTags[1] = Span:initSpan($dataWithoutTags);
+		$this->dataWithTags[1] = trim(strip_tags($dataWithoutTags)); // $this->dataWithTags[1] = Span:initSpan($dataWithoutTags);
 		
-		$this->dataWithTags[2] = "</td>\n";
+		$this->dataWithTags[2] = "</td>";
 		
 	}
 	
 	public function __toString() {
-		return implode(NULL, $this->dataWithTags);
+		return implode($this->dataWithTags);
 	}
 	
 	public function getCleanData() {
 		return $this->dataWithoutTags;
 	}	
-	
-	public static function initTd($string) {
-				
-		$result = array();
-		$tdatas = Document::find('td', $string);
-		foreach ($tdatas as $td) {
-			$result[] = new Tdata($td);
-		}
-			
-		return $result;	
-	}
 }
-?>

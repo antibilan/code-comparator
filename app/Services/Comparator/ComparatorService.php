@@ -87,7 +87,7 @@ class ComparatorService
             $rowArrayFkko[] = Document::getRowsInTable($document2[$key], true);
         }
 
-        $tmp = $table->findRow('Наименование');
+        $tmp = $table->findRow('отходы изделий технического назначения');
 
         //return $rowArray;
         return $tmp;
