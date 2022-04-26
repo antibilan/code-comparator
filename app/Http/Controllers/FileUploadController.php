@@ -30,6 +30,10 @@ class FileUploadController extends Controller
                 return view('home');
             }
 
+            $test = ComparatorService::compareDocumentsByRow($parsedDocument1, $parsedDocument2);
+
+            dd($test);
+
             $results = [
                 ComparatorService::compareDocumentsByColumn($parsedDocument1, $parsedDocument2, 'name'),
                 ComparatorService::compareDocumentsByColumn($parsedDocument1, $parsedDocument2, 'code'),  
@@ -38,7 +42,7 @@ class FileUploadController extends Controller
             Storage::putFileAs($uploadFolder, $file1, $filename1);
             Storage::putFileAs($uploadFolder, $file2, $filename2);
 
-            return view('home', ['results' => $results]);
+            //return view('home', ['results' => $results]);
         }
     }
 }

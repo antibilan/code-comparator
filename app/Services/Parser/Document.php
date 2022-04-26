@@ -71,10 +71,8 @@ class Document {
 				break;
 			}
 			
-		}
-		
-		return $this->charset;
-		
+		}		
+		return $this->charset;		
 	}
 	
 	// Gets Table object $table and № of the column $column
@@ -82,66 +80,60 @@ class Document {
 	public static function getColumnInTable(Table $table, int $columnNumber) {
 		
 		$result = array();
-		$tableData = $table->table[1];
+		$tableData = $table->data[1];
 
 		foreach ($tableData as $row) {
-			//if (isset($row->row[1][$column])) {
-			if (count($row->row[1]) >= 2) { //don't take rows with 0 or 1 <td> aka columns, as we need only rows containing both Code and Name
-				$result[] = trim(
-							mb_strtolower( 	// to lowercase
-							str_replace(	// remove nbsp, double- and triple- spaces
-							array('&nbsp;', '  ', '   '), ' ', (
-							str_replace(	// remove new lines
-							array("\r\n", "\n", "\r"), '' , $row->row[1][$columnNumber]->dataWithTags[1])))));
+			//if (isset($row->data[1][$column])) {							
+			
+			if (count($row->data[1]) >= 2) { //don't take rows with 0 or 1 <td> aka columns, as we need only rows containing both Code and Name
+				$rawTdContent = $row->data[1][$columnNumber]->dataWithTags[1];
+				$result[] = self::formatRawString($rawTdContent);
+			}
+		}
+		return $result;			
+	}
+
+	public static function getColumnInTableAsIs(Table $table, int $columnNumber): array {
+		
+		$result = array();
+		$tableData = $table->data[1];
+
+		foreach ($tableData as $row) {
+			//if (isset($row->data[1][$column])) {
+			if (count($row->data[1]) >= 2) { //don't take rows with 0 or 1 <td> aka columns, as we need only rows containing both Code and Name
+				
+				$rawTdContent = $row->data[1][$columnNumber]->dataWithTags[1];
+				
+				$key = trim( str_replace( array("\r\n", "\n", "\r"), '' , $rawTdContent));
+				$value = self::formatRawString($rawTdContent);
+
+				$result[$key] = $value;
 			}
 		}
 		return $result;
-		
 	}
 
-	public static function getRowInTable(Table $table, $fkkoFlag = false): array {
+	public static function getRowsInTable(Table $table, $fkkoFlag = false): array {
 		$result = array();
-		$tableData = $table->table[1];
+		$tableData = $table->data[1];
 
 		foreach($tableData as $row) {
-			if (count($row->row[1]) >= 2) {
+			if (count($row->data[1]) >= 2) {
 				if (!$fkkoFlag) {
 					$result[] = [
-						$row->row[1][2]->dataWithTags[1],
-						$row->row[1][1]->dataWithTags[1],
+						$row->data[1][2]->dataWithTags[1],
+						$row->data[1][1]->dataWithTags[1],
 					];
 				} else {
 					$result[] = [
-						$row->row[1][0]->dataWithTags[1],
-						$row->row[1][1]->dataWithTags[1],
+						$row->data[1][0]->dataWithTags[1],
+						$row->data[1][1]->dataWithTags[1],
 					];
 				}
 			}
 		}
 
 		return $result;
-	}
-
-	public static function getColumnInTableAsIs(Table $table, int $columnNumber): array {
-		
-		$result = array();
-		$tableData = $table->table[1];
-
-		foreach ($tableData as $row) {
-			//if (isset($row->row[1][$column])) {
-			if (count($row->row[1]) >= 2) { //don't take rows with 0 or 1 <td> aka columns, as we need only rows containing both Code and Name
-				$key = trim( str_replace( array("\r\n", "\n", "\r"), '' , $row->row[1][$columnNumber]->dataWithTags[1]));
-				$value = trim(
-					mb_strtolower( 	// to lowercase
-					str_replace(	// remove nbsp, double- and triple- spaces
-					array('&nbsp;', '  ', '   '), ' ', (
-					str_replace(	// remove new lines
-					array("\r\n", "\n", "\r"), '' , $row->row[1][$columnNumber]->dataWithTags[1])))));
-				$result[$key] = $value;
-			}
-		}
-		return $result;
-		
 	}
 	
 	public function filterTables() {	
@@ -164,9 +156,16 @@ class Document {
 		return $result;
 	
 	}
-	
+
+	private static function formatRawString(string $string): string {
+		$output = trim(
+			mb_strtolower( 	// to lowercase
+			str_replace(	// remove nbsp, double- and triple- spaces
+			array('&nbsp;', '  ', '   '), ' ', (
+			str_replace(	// remove new lines
+			array("\r\n", "\n", "\r"), '' , $string))))
+		);
+
+		return $output;	
+	}				
 }
-
-
-
-?>
