@@ -2,37 +2,40 @@
 
 namespace App\Services\Parser;
 
-class Row {
-	
-	public $row = array();
-	#public $data;
-		
-	public function __construct($data) {
+use APP\Services\Parser\TagObject;
+
+class Row extends TagObject
+{		
+	public function __construct(string $data) {
 				
-		$this->row[0] = "<tr>\n";
+		$this->data['openTag'] = "<tr>";
 					
 		$pattern = array("#<tr.+?>#s", "#</tr>#s");	
 		
 		$dataWithoutTags = preg_replace($pattern, '', $data);
 		
-		$this->row[1] = Tdata::initTd($dataWithoutTags);
+		$this->data['content'] = $this->initRowWithTd($dataWithoutTags);
 		
-		$this->row[2] = "</tr>\n";		
-		
+		$this->data['closeTag'] = "</tr>";				
 	}
 	
 	public function __toString() {
-		return implode('', $this->row);
+		return implode($this->data);
 	}
 
-	public static function initRows($string) {
-		$result = array();
-		$rows = Document::find('tr', $string);
-		foreach ($rows as $row) {
-			$result[] = new Row($row);
+	public function initRowWithTd(string $string): array {
+				
+		$result = [];
+		$tdTags = Document::findTags('td', $string);
+		foreach ($tdTags as $key => $td) {
+			$result[] = new Tdata($td);
+			$result[$key]->position = $key;
 		}
-		return $result;
+			
+		return $result;	
+	}
+
+	public function setPosition(int $index) {
+		$this->position = $index;
 	}
 }
-
-?>

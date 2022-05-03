@@ -30,6 +30,10 @@ class FileUploadController extends Controller
                 return view('home');
             }
 
+            //$test = ComparatorService::compareDocumentsByRow($parsedDocument1, $parsedDocument2);
+
+            //dd($test);
+
             $results = [
                 ComparatorService::compareDocumentsByColumn($parsedDocument1, $parsedDocument2, 'name'),
                 ComparatorService::compareDocumentsByColumn($parsedDocument1, $parsedDocument2, 'code'),  

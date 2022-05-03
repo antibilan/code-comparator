@@ -8,7 +8,7 @@ use Exception;
 
 class ComparatorService
 {
-    public static function compareDocumentsByColumn(array $document1, array $document2, $column) {
+    public static function compareDocumentsByColumn(array $document1, array $document2, $column): array {
         
         if($column === 'name') {
             //company file
@@ -81,10 +81,15 @@ class ComparatorService
     public static function compareDocumentsByRow(array $document1, array $document2) {
         
         $table = $document1[0];
-        $rowArray = Document::getRowInTable($table);
+        $rowArray = Document::getRowsInTable($table);
         
         foreach ($document2 as $key => $blockTable) {
-            $rowArrayFkko[] = Document::getRowInTable($document2[$key], true);
+            $rowArrayFkko[] = Document::getRowsInTable($document2[$key], true);
         }
+
+        //$tmp = $table->findRow('Наименование'); //BUG: 
+
+        //return $rowArray;
+        return $rowArrayFkko[0];
     }
 }

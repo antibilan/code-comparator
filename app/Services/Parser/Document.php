@@ -20,13 +20,13 @@ class Document {
 			}	
 
 		// try {
-		// 	$this->find('html', $this->data);
+		// 	$this->findTags('html', $this->data);
 		// } catch (Exception $e) {
 		// 	throw new Exception('Non-HTML file is provided');
 		// }
 	}
 	
-	public static function find($tag, $data) {
+	public static function findTags(string $tag, string $data) {
 		if ($tag === 'meta') {
 			$pattern = "#<meta.+?>#"; //did I miss "s" at the end?
 		} elseif ($tag === 'html') {
@@ -36,7 +36,10 @@ class Document {
 			//var_dump($data);
 			//$pattern = "#$tag#";
 		}
-		preg_match_all($pattern, $data, $matches);
+
+		////BUG in preg_match_all: some <td>bla</td> are parsed with additional spaces between words. Something wrong with new lines
+		//Example: example.html, line: отходы изделий технического назначения из полипропилена незагрязненные
+		preg_match_all($pattern, $data, $matches); 
 
 		if(empty($matches[0])) {
 			throw new \Exception("Tag $tag was not found in the data");
@@ -53,7 +56,7 @@ class Document {
 	public function detectCharset() {
 		
 		try {
-			$metaStrArr = $this->find('meta', $this->data);	
+			$metaStrArr = $this->findTags('meta', $this->data);	
 		} catch (Exception $e) {
 			return $this->charset;
 		}
@@ -71,49 +74,63 @@ class Document {
 				break;
 			}
 			
-		}
-		
-		return $this->charset;
-		
+		}		
+		return $this->charset;		
 	}
 	
 	// Gets Table object $table and № of the column $column
 	// Returns array of Tdata objects
-	public static function getColumnInTable(Table $table, int $columnNumber) {
+	public static function getColumnInTable(Table $table, int $columnNumber): array {
 		
 		$result = array();
-		$tableData = $table->table[1];
+		$tableData = $table->data['content'];
 
 		foreach ($tableData as $row) {
-			//if (isset($row->row[1][$column])) {
-			if (count($row->row[1]) >= 2) { //don't take rows with 0 or 1 <td> aka columns, as we need only rows containing both Code and Name
-				$result[] = trim(
-							mb_strtolower( 	// to lowercase
-							str_replace(	// remove nbsp, double- and triple- spaces
-							array('&nbsp;', '  ', '   '), ' ', (
-							str_replace(	// remove new lines
-							array("\r\n", "\n", "\r"), '' , $row->row[1][$columnNumber]->dataWithTags[1])))));
+			//if (isset($row->data['content'][$column])) {							
+			
+			if (count($row->data['content']) >= 2) { //don't take rows with 0 or 1 <td> aka columns, as we need only rows containing both Code and Name
+				$rawTdContent = $row->data['content'][$columnNumber]->dataWithTags[1];
+				$result[] = self::formatRawString($rawTdContent);
+			}
+		}
+		return $result;			
+	}
+
+	public static function getColumnInTableAsIs(Table $table, int $columnNumber): array {
+		
+		$result = array();
+		$tableData = $table->data['content'];
+
+		foreach ($tableData as $row) {
+			//if (isset($row->data['content'][$column])) {
+			if (count($row->data['content']) >= 2) { //don't take rows with 0 or 1 <td> aka columns, as we need only rows containing both Code and Name
+				
+				$rawTdContent = $row->data['content'][$columnNumber]->dataWithTags[1];
+				
+				$key = trim( str_replace( array("\r\n", "\n", "\r"), '' , $rawTdContent));
+				$value = self::formatRawString($rawTdContent);
+
+				$result[$key] = $value;
 			}
 		}
 		return $result;
-		
 	}
 
-	public static function getRowInTable(Table $table, $fkkoFlag = false): array {
+	public static function getRowsInTable(Table $table, $fkkoFlag = false): array {
 		$result = array();
-		$tableData = $table->table[1];
+		$tableData = $table->data['content'];
 
 		foreach($tableData as $row) {
-			if (count($row->row[1]) >= 2) {
+			if (count($row->data['content']) >= 2) {
 				if (!$fkkoFlag) {
 					$result[] = [
-						$row->row[1][2]->dataWithTags[1],
-						$row->row[1][1]->dataWithTags[1],
+						$row->data['content'][2]->dataWithTags[1],
+						$row->data['content'][1]->dataWithTags[1],
 					];
 				} else {
 					$result[] = [
-						$row->row[1][0]->dataWithTags[1],
-						$row->row[1][1]->dataWithTags[1],
+						$row->data['content'][0]->dataWithTags[1],
+						$row->data['content'][1]->dataWithTags[1],
 					];
 				}
 			}
@@ -121,35 +138,13 @@ class Document {
 
 		return $result;
 	}
-
-	public static function getColumnInTableAsIs(Table $table, int $columnNumber): array {
-		
-		$result = array();
-		$tableData = $table->table[1];
-
-		foreach ($tableData as $row) {
-			//if (isset($row->row[1][$column])) {
-			if (count($row->row[1]) >= 2) { //don't take rows with 0 or 1 <td> aka columns, as we need only rows containing both Code and Name
-				$key = trim( str_replace( array("\r\n", "\n", "\r"), '' , $row->row[1][$columnNumber]->dataWithTags[1]));
-				$value = trim(
-					mb_strtolower( 	// to lowercase
-					str_replace(	// remove nbsp, double- and triple- spaces
-					array('&nbsp;', '  ', '   '), ' ', (
-					str_replace(	// remove new lines
-					array("\r\n", "\n", "\r"), '' , $row->row[1][$columnNumber]->dataWithTags[1])))));
-				$result[$key] = $value;
-			}
-		}
-		return $result;
-		
-	}
 	
-	public function filterTables() {	
+	public function filterTables(): array {	
 		
 		$result = array();
 		
 		try {
-			$tables = $this->find('table', $this->data);
+			$tables = $this->findTags('table', $this->data);
 		} catch(Exception $e) { 
 			throw new Exception('Tag <table> was not found in the data');
 		}
@@ -164,9 +159,16 @@ class Document {
 		return $result;
 	
 	}
-	
+
+	private static function formatRawString(string $string): string {
+		$output = trim(
+			mb_strtolower( 	// to lowercase
+			str_replace(	// remove nbsp, double- and triple- spaces
+			array('&nbsp;', '  ', '   '), ' ', (
+			str_replace(	// remove new lines
+			array("\r\n", "\n", "\r"), '' , $string))))
+		);
+
+		return $output;	
+	}				
 }
-
-
-
-?>
