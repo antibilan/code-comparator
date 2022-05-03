@@ -83,13 +83,13 @@ class Document {
 	public static function getColumnInTable(Table $table, int $columnNumber): array {
 		
 		$result = array();
-		$tableData = $table->data[1];
+		$tableData = $table->data['content'];
 
 		foreach ($tableData as $row) {
-			//if (isset($row->data[1][$column])) {							
+			//if (isset($row->data['content'][$column])) {							
 			
-			if (count($row->data[1]) >= 2) { //don't take rows with 0 or 1 <td> aka columns, as we need only rows containing both Code and Name
-				$rawTdContent = $row->data[1][$columnNumber]->dataWithTags[1];
+			if (count($row->data['content']) >= 2) { //don't take rows with 0 or 1 <td> aka columns, as we need only rows containing both Code and Name
+				$rawTdContent = $row->data['content'][$columnNumber]->dataWithTags[1];
 				$result[] = self::formatRawString($rawTdContent);
 			}
 		}
@@ -99,13 +99,13 @@ class Document {
 	public static function getColumnInTableAsIs(Table $table, int $columnNumber): array {
 		
 		$result = array();
-		$tableData = $table->data[1];
+		$tableData = $table->data['content'];
 
 		foreach ($tableData as $row) {
-			//if (isset($row->data[1][$column])) {
-			if (count($row->data[1]) >= 2) { //don't take rows with 0 or 1 <td> aka columns, as we need only rows containing both Code and Name
+			//if (isset($row->data['content'][$column])) {
+			if (count($row->data['content']) >= 2) { //don't take rows with 0 or 1 <td> aka columns, as we need only rows containing both Code and Name
 				
-				$rawTdContent = $row->data[1][$columnNumber]->dataWithTags[1];
+				$rawTdContent = $row->data['content'][$columnNumber]->dataWithTags[1];
 				
 				$key = trim( str_replace( array("\r\n", "\n", "\r"), '' , $rawTdContent));
 				$value = self::formatRawString($rawTdContent);

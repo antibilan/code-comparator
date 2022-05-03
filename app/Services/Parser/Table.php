@@ -45,7 +45,7 @@ class Table extends TagObject
 	}
 
 	// Найти строку (class Row) в таблице (Table) содержащей подстроку $string
-	public function findRow($string) {
+	public function findRow($string): Row {
 			
 		$rows = $this->data['content'];
 
