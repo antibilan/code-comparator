@@ -1,8 +1,0 @@
-{
-    "php.validate.executablePath": 
-    "C:\\OpenServer\\modules\\php\\PHP_8.0\\php.exe",
-
-    "phpsab.executablePathCS": ".\\vendor\\squizlabs\\php_codesniffer\\bin\\phpcs",
-    "composer.executablePath": "C:\\OpenServer\\modules\\php\\PHP_8.0\\composer.bat",
-    "composer.workingPath": "C:\\OpenServer\\domains\\comparator.pro\\composer.json"
-}
