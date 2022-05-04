@@ -1,3 +1,7 @@
+# Comparator
+
+Single-page app based on laravel aimed to compare tables two html files by parsing them. It checks if the first file contains the codes and names from the second file. 
+
 <p align="center"><img src="https://res.cloudinary.com/dtfbvvkyp/image/upload/v1566331377/laravel-logolockup-cmyk-red.svg" width="400"></p>
 
 <p align="center">
