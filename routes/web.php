@@ -15,6 +15,7 @@
     return view('welcome');
 }); */
 
+use App\Http\Controllers\FkkoController;
 use App\Http\Controllers\FileUploadController;
 use App\Http\Controllers\MainController;
 use App\Http\Controllers\ParseController;
@@ -24,6 +25,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [MainController::class, 'index'])->name('home');
 Route::get('/search', [MainController::class, 'search'])->name('search');
+Route::get('/fkko', [FkkoController::class, 'show'])->name('showFkkoTable');
 
 Route::post('/upload', [FileUploadController::class, 'uploadFile'])->name('upload');
 Route::post('/uploadFkko', [FileUploadController::class, 'uploadFile'])->name('uploadFkko');

@@ -34,10 +34,13 @@
 
         <ul class="nav nav-tabs justify-content-center nav-fill" id="myTab" role="tablist">
           <li class="nav-item" role="presentation">
-            <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">Only DIfference</button>
+            <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">Только различия</button>
           </li>
           <li class="nav-item" role="presentation">
-            <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false">Side by Side</button>
+            <button class="nav-link" id="compare-tab" data-bs-toggle="tab" data-bs-target="#compare" type="button" role="tab" aria-controls="compare" aria-selected="false">Строка к строке</button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="fkko-tab" data-bs-toggle="tab" data-bs-target="#fkko" type="button" role="tab" aria-controls="fkko" aria-selected="false">ФККО</button>
           </li>
         </ul>
         <div class="tab-content" id="myTabContent">
@@ -46,10 +49,15 @@
             </div>
             @yield('onlydiff')
           </div>
-          <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-          <div class="row mb-5">
+          <div class="tab-pane fade" id="compare" role="tabpanel" aria-labelledby="compare-tab">
+            <div class="row mb-5">
             </div>
             @yield('sydebyside')
+          </div>
+          <div class="tab-pane fade" id="fkko" role="tabpanel" aria-labelledby="fkko-tab">
+            <div class="row mb-5">
+            </div>
+            @yield('fkko')
           </div>
         </div>
       </div>
