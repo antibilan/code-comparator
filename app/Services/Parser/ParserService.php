@@ -22,7 +22,7 @@ class ParserService
 
         $tablesStr = $document->filterTables();
         
-        $tables = array();
+        $tables = [];
         foreach ($tablesStr as $tableStr) {
             $tables[] = new Table($tableStr);	
         }

@@ -7,6 +7,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 
 class RegisterController extends Controller
 {
@@ -67,6 +69,35 @@ class RegisterController extends Controller
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
+        ]);
+    }
+
+    public function store(Request $request){
+        if(Auth::check()){
+            return redirect(route('home'));
+        }
+
+        $validateFields = $request->validate(
+            [
+            'email' => 'required|email',
+            'password' => 'required',
+            ]
+        );
+
+        if(User::where('email', $validateFields['email'])->exists()){
+            redirect(route('login'))->withErrors([
+                'formError' => 'Такой пользователь уже существует.'
+            ]);
+        }
+
+        $user = User::create($validateFields);
+        if($user){
+            Auth::login($user);
+            return redirect(route('home'));
+        }
+
+        return redirect(route('login'))->withErrors([
+            'formError' => 'Произошла ошибка при сохранении пользователя.'
         ]);
     }
 }

@@ -4,19 +4,9 @@
 <div class="container-fluid">
 	<div class="row">
 		<div class="col"></div>
-		
+
 		<div class="col">
-			<form method='post' id="uploadForm" enctype="multipart/form-data" action="{{ route('upload') }}">		
-				@csrf
-				<div class="mb-3">
-					<label for="fileCompany" class="form-label">Выберите файл предприятия</label>
-					<input type="file" class="form-control" id="fileCompany" name="fileCompany">
-					<label for="FileFKKO" class="form-label">Выберите файл ФККО</label>
-					<input type="file" class="form-control" id="fileFkko" name="fileFkko">
-					<div id="uploadHelp" class="form-text">Укажите путь к файлу в формате .html</div>
-					<!-- <button type="submit" class="btn btn-primary">Сравнить</button> -->
-				</div>						
-			</form>
+			<x-forms.upload-fkko-files-form />
 		</div>
 
 		<div class="col"></div>
@@ -25,7 +15,7 @@
 @endsection
 
 @section('onlydiff')
-<div><button type="submit" class="btn btn-primary" form="uploadForm">Сравнить</button></div>
+<!-- <div><button type="submit" class="btn btn-primary" form="uploadForm">Сравнить</button></div> -->
 	@if(isset($results))
 		<div class="row">
 		@foreach($results as $key => $result)
@@ -35,18 +25,18 @@
 						@if($key === 0)
 							<thead>
 								<tr>
-									<th scope="col">Расхождения в наименованиях</td>
+									<th scope="col">Расхождения в наименованиях</th>
 								</tr>
 							</thead>
 						@endif
 						@if($key === 1)
 							<thead>
 								<tr>
-									<th scope="col">Расхождения в кодах</td>
+									<th scope="col">Расхождения в кодах</th>
 								</tr>
 							</thead>
 						@endif
-						@foreach ($result as $diff)						
+						@foreach ($result as $diff)
 							<tbody>
 								<tr>
 									<td>{{ $diff }}</td>
@@ -62,13 +52,13 @@
 @endsection
 
 @section('sydebyside')
-<div><button type="submit" class="btn btn-primary" form="uploadForm">Сравнить</button></div>
+<!-- <div><button type="submit" class="btn btn-primary" form="uploadForm">Сравнить</button></div> -->
 <div class="col">
 				<div class="container-fluid">
-					<table class="table table-striped">						
+					<table class="table table-striped">
 						<thead>
 							<tr>
-								<th scope="col">заголовок</td>
+								<th scope="col">заголовок</th>
 							</tr>
 						</thead>
 						<tbody>

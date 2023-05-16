@@ -32,17 +32,25 @@ class FileUploadController extends Controller
 
             //$test = ComparatorService::compareDocumentsByRow($parsedDocument1, $parsedDocument2);
 
-            //dd($test);
+            dd($parsedDocument2);
 
-            $results = [
-                ComparatorService::compareDocumentsByColumn($parsedDocument1, $parsedDocument2, 'name'),
-                ComparatorService::compareDocumentsByColumn($parsedDocument1, $parsedDocument2, 'code'),  
-            ];            
+            $results = $parsedDocument2;
+
+            // $results = [
+            //     ComparatorService::compareDocumentsByColumn($parsedDocument1, $parsedDocument2, 'name'),
+            //     ComparatorService::compareDocumentsByColumn($parsedDocument1, $parsedDocument2, 'code'),  
+            // ];            
 
             Storage::putFileAs($uploadFolder, $file1, $filename1);
             Storage::putFileAs($uploadFolder, $file2, $filename2);
 
             return view('home', ['results' => $results]);
+        }
+    }
+    
+    public function uplouploadFkko(Request $request){
+        if ($request->isMethod('post')){
+
         }
     }
 }
