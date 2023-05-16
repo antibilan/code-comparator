@@ -10,8 +10,8 @@ class Document {
 	public string $data;
 	public $charset;
 	
-	public function __construct(UploadedFile $html) {
-		$this->data = $html->getContent($html);
+	public function __construct($html) {
+		$this->data = file_get_contents($html);
 		
 		$charset = $this->detectCharset();
 
